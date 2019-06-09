@@ -7,6 +7,7 @@ import java.util.List;
 
 import com.mytaxi.domainobject.CarDO;
 import com.mytaxi.domainobject.ManufacturerDO;
+import com.mytaxi.exception.CarAlreadyInUseException;
 import com.mytaxi.exception.ConstraintsViolationException;
 import com.mytaxi.exception.EntityNotFoundException;
 
@@ -28,6 +29,8 @@ public interface CarService {
 
 	void updateCar(CarDO makeCarDO, Long carId) throws EntityNotFoundException;
 
-	void selectCarForDriver(Long driverId, Long carId);
+	void selectCarForDriver(Long driverId, Long carId) throws EntityNotFoundException, CarAlreadyInUseException;
+
+	void deselectCarForDriver(Long driverId) throws EntityNotFoundException;
 
 }

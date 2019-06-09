@@ -15,13 +15,15 @@ import org.springframework.dao.DataIntegrityViolationException;
 import org.springframework.stereotype.Service;
 
 import com.mytaxi.dataaccessobject.CarRepository;
-import com.mytaxi.dataaccessobject.DriverRepository;
 import com.mytaxi.dataaccessobject.ManufacturerRepository;
 import com.mytaxi.domainobject.CarDO;
 import com.mytaxi.domainobject.DriverDO;
 import com.mytaxi.domainobject.ManufacturerDO;
+import com.mytaxi.domainvalue.OnlineStatus;
+import com.mytaxi.exception.CarAlreadyInUseException;
 import com.mytaxi.exception.ConstraintsViolationException;
 import com.mytaxi.exception.EntityNotFoundException;
+import com.mytaxi.service.driver.DriverService;
 import com.mytaxi.util.CopyUtil;
 
 /**
@@ -35,17 +37,35 @@ import com.mytaxi.util.CopyUtil;
 @Service
 public class DefaultCarService implements CarService {
 
+	private static final String BEAN_EXCEPTION_WHILE_GETTING_PROPERTIES_OF_CAR = "Bean Exception while getting properties of car";
+
+	private static final String GETTING_ALL_MANUFACTURERS = "getting all manufacturers...";
+
+	private static final String GETTING_ALL_CARS = "getting all cars...";
+
+	private static final String CONSTRAINTS_VIOLATION_EXCEPTION_WHILE_CREATING_A_CAR = "ConstraintsViolationException while creating a car: {}";
+
+	private static final String CAR_NOT_FOUND_WITH_ID = "Car not found with Id ";
+
+	private static final String ATTACHING_THE_SAME = "Attaching the same...";
+
+	private static final String MANUFACTURER_DOES_NOT_EXIST_CREATING_NOW = "Manufacturer does not exist. Creating now...";
+
+	private static final String CAR_IS_ALREADY_IN_USE = "Car is already in use";
+
+	private static final String DRIVER_OFFLINE = "Driver offline";
+
 	private static final Logger LOG = LoggerFactory.getLogger(DefaultCarService.class);
 
 	private final CarRepository carRepository;
-	private final DriverRepository driverRepository;
+	private final DriverService driverService;
 	private final ManufacturerRepository manufacturerRepository;
 
 	@Autowired
-	public DefaultCarService(final CarRepository carRepository, final DriverRepository driverRepository,
+	public DefaultCarService(final CarRepository carRepository, final DriverService driverService,
 			ManufacturerRepository manufacturerRepository) {
 		this.carRepository = carRepository;
-		this.driverRepository = driverRepository;
+		this.driverService = driverService;
 		this.manufacturerRepository = manufacturerRepository;
 	}
 
@@ -59,14 +79,14 @@ public class DefaultCarService implements CarService {
 	public CarDO findCar(Long carId) throws EntityNotFoundException {
 
 		return carRepository.findById(carId)
-				.orElseThrow(() -> new EntityNotFoundException("Car not found with Id " + carId));
+				.orElseThrow(() -> new EntityNotFoundException(CAR_NOT_FOUND_WITH_ID + carId));
 	}
 
 	/**
 	 * Creates car.
 	 * 
 	 * @throws ConstraintsViolationException
-	 * when carDO unique constraint not satisfied.
+	 *             when carDO unique constraint not satisfied.
 	 */
 	@Override
 	public CarDO createCar(CarDO car) throws ConstraintsViolationException {
@@ -75,7 +95,7 @@ public class DefaultCarService implements CarService {
 			settingManufacturer(car);
 			carDO = carRepository.save(car);
 		} catch (DataIntegrityViolationException e) {
-			LOG.warn("ConstraintsViolationException while creating a car: {}", e);
+			LOG.warn(CONSTRAINTS_VIOLATION_EXCEPTION_WHILE_CREATING_A_CAR, e);
 			throw new ConstraintsViolationException(e.getMessage());
 		}
 		return carDO;
@@ -83,7 +103,7 @@ public class DefaultCarService implements CarService {
 
 	@Override
 	public List<CarDO> findAllCar() {
-		LOG.debug("getting all cars...");
+		LOG.debug(GETTING_ALL_CARS);
 		return (List<CarDO>) carRepository.findAll();
 	}
 
@@ -111,8 +131,7 @@ public class DefaultCarService implements CarService {
 	@Transactional
 	private void updateDriverSelectedCar(Long id) throws EntityNotFoundException {
 
-		DriverDO driver = driverRepository.findById(id)
-				.orElseThrow(() -> new EntityNotFoundException("Driver Not found!"));
+		DriverDO driver = driverService.find(id);
 		if (null != driver) {
 			driver.setSelectedCar(null);
 		}
@@ -121,7 +140,7 @@ public class DefaultCarService implements CarService {
 
 	@Override
 	public List<ManufacturerDO> getAllCarManufacturers() {
-		LOG.debug("getting all manufacturers...");
+		LOG.debug(GETTING_ALL_MANUFACTURERS);
 		return (List<ManufacturerDO>) manufacturerRepository.findAll();
 	}
 
@@ -138,7 +157,7 @@ public class DefaultCarService implements CarService {
 				CopyUtil.copyNonNullProperties(foundCar, makeCarDO);
 			}
 		} catch (BeansException e) {
-			LOG.error("Bean Exception while getting properties of car", makeCarDO, e);
+			LOG.error(BEAN_EXCEPTION_WHILE_GETTING_PROPERTIES_OF_CAR, makeCarDO, e);
 		}
 	}
 
@@ -152,10 +171,10 @@ public class DefaultCarService implements CarService {
 			manufacturer.setBrand(manufacturer.getBrand());
 			List<ManufacturerDO> manufacturerByBrand = manufacturerRepository.findByBrand(manufacturer.getBrand());
 			if (!manufacturerByBrand.isEmpty()) {
-				LOG.info("Attaching the same...");
+				LOG.info(ATTACHING_THE_SAME);
 				makeCarDO.setManufacturer(manufacturerByBrand.get(0));
 			} else {
-				LOG.info("Manufacturer does not exist. Creating now...");
+				LOG.info(MANUFACTURER_DOES_NOT_EXIST_CREATING_NOW);
 				ManufacturerDO savedManufacturer = manufacturerRepository.save(manufacturer);
 				makeCarDO.setManufacturer(savedManufacturer);
 			}
@@ -163,9 +182,43 @@ public class DefaultCarService implements CarService {
 	}
 
 	@Override
-	public void selectCarForDriver(Long driverId, Long carId) {
-		
-		
+	@Transactional
+	public void selectCarForDriver(Long driverId, Long carId) throws EntityNotFoundException, CarAlreadyInUseException {
+		DriverDO driver = driverService.find(driverId);
+		CarDO car = this.findCar(carId);
+		if (null != driver) {
+			if (!carInUse(car)) {
+				extracted(driver, car);
+			}else{
+				throw new CarAlreadyInUseException(CAR_IS_ALREADY_IN_USE);
+			}
+
+		}
+
+	}
+
+	private void extracted(DriverDO driver, CarDO car) throws EntityNotFoundException {
+		if (OnlineStatus.ONLINE.equals(driver.getOnlineStatus())) {
+			driver.setSelectedCar(car);
+			car.setAllocatedDriver(driver);
+		}else{
+			throw new EntityNotFoundException(DRIVER_OFFLINE);
+		}
+	}
+
+	private boolean carInUse(CarDO car) {
+		return (null != car.getAllocatedDriver()
+				&& OnlineStatus.ONLINE.equals(car.getAllocatedDriver().getOnlineStatus()));
+	}
+
+	@Override
+	@Transactional
+	public void deselectCarForDriver(Long driverId) throws EntityNotFoundException {
+
+		DriverDO driver = driverService.find(driverId);
+		if (null != driver) {
+			driver.setSelectedCar(null);
+		}
 	}
 
 }

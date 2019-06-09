@@ -84,9 +84,14 @@ public class DriverController
         return DriverMapper.makeDriverDTOList(driverService.find(onlineStatus));
     }
     
-    @PutMapping("/select/")
+    @PutMapping("/carselect")
     public void selectCar(@RequestParam Long driverId, @RequestParam Long carId) throws  EntityNotFoundException {
         carService.selectCarForDriver(driverId,carId);
+    }
+    
+    @DeleteMapping("/cardeselect")
+    public void deselectCar(@RequestParam Long driverId, @RequestParam Long carId) throws  EntityNotFoundException {
+        carService.deselectCarForDriver(driverId);
     }
 
 }
