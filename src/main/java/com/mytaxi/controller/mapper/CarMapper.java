@@ -4,6 +4,9 @@
 package com.mytaxi.controller.mapper;
 
 import java.time.ZonedDateTime;
+import java.util.ArrayList;
+import java.util.List;
+import java.util.stream.Collectors;
 
 import com.mytaxi.datatransferobject.CarDTO;
 import com.mytaxi.domainobject.CarDO;
@@ -30,6 +33,13 @@ public class CarMapper {
 					ManufacturerMapper.makeDO(carDTO.getManufacturer()), new Integer(0), carDTO.getClassification(),
 					carDTO.getColour(), ZonedDateTime.now(), false);
 			return carDo;
+		}
+		return null;
+	}
+
+	public static List<CarDTO> createCarDTOList(List<CarDO> listOfCarDO) {
+		if (null != listOfCarDO) {
+			return listOfCarDO.stream().map(CarMapper::createCarDTO).collect(Collectors.toList());
 		}
 		return null;
 	}

@@ -93,7 +93,7 @@ public class CarDO {
 	private Boolean deleted = false;
  
 	@OneToOne
-	@JoinColumn(name = "alloc_driver_id", referencedColumnName = "id")
+	@JoinColumn(name = "allocated_driver", referencedColumnName = "id")
 	private DriverDO allocatedDriver;
 	
 	

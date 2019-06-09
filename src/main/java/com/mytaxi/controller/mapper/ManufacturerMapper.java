@@ -1,6 +1,8 @@
 package com.mytaxi.controller.mapper;
 
 import java.time.ZonedDateTime;
+import java.util.List;
+import java.util.stream.Collectors;
 
 import com.mytaxi.datatransferobject.ManufacturerDTO;
 import com.mytaxi.domainobject.ManufacturerDO;
@@ -24,4 +26,9 @@ public class ManufacturerMapper {
 		}
 		return null;
 	}
+	   public static List<ManufacturerDTO> makeManufacturerDTOList(List<ManufacturerDO> manufacturers){
+	        return manufacturers.stream()
+	                .map(ManufacturerMapper::createDTO)
+	                .collect(Collectors.toList());
+	    }
 }
