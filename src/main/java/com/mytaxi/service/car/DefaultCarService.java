@@ -188,7 +188,7 @@ public class DefaultCarService implements CarService {
 		CarDO car = this.findCar(carId);
 		if (null != driver) {
 			if (!carInUse(car)) {
-				extracted(driver, car);
+				allocateIfOnline(driver, car);
 			}else{
 				throw new CarAlreadyInUseException(CAR_IS_ALREADY_IN_USE);
 			}
@@ -197,7 +197,7 @@ public class DefaultCarService implements CarService {
 
 	}
 
-	private void extracted(DriverDO driver, CarDO car) throws EntityNotFoundException {
+	private void allocateIfOnline(DriverDO driver, CarDO car) throws EntityNotFoundException {
 		if (OnlineStatus.ONLINE.equals(driver.getOnlineStatus())) {
 			driver.setSelectedCar(car);
 			car.setAllocatedDriver(driver);

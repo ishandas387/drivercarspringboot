@@ -19,8 +19,10 @@ import org.springframework.web.bind.annotation.RestController;
 
 import com.mytaxi.controller.mapper.DriverMapper;
 import com.mytaxi.datatransferobject.DriverDTO;
+import com.mytaxi.datatransferobject.SearchDTO;
 import com.mytaxi.domainobject.DriverDO;
 import com.mytaxi.domainvalue.OnlineStatus;
+import com.mytaxi.exception.CarAlreadyInUseException;
 import com.mytaxi.exception.ConstraintsViolationException;
 import com.mytaxi.exception.EntityNotFoundException;
 import com.mytaxi.service.car.CarService;
@@ -85,7 +87,7 @@ public class DriverController
     }
     
     @PutMapping("/carselect")
-    public void selectCar(@RequestParam Long driverId, @RequestParam Long carId) throws  EntityNotFoundException {
+    public void selectCar(@RequestParam Long driverId, @RequestParam Long carId) throws  EntityNotFoundException, CarAlreadyInUseException {
         carService.selectCarForDriver(driverId,carId);
     }
     
@@ -93,5 +95,11 @@ public class DriverController
     public void deselectCar(@RequestParam Long driverId, @RequestParam Long carId) throws  EntityNotFoundException {
         carService.deselectCarForDriver(driverId);
     }
+    
+    @GetMapping("/search")
+    public List<DriverDTO> search(SearchDTO searchDTO)
+    {
+        return DriverMapper.makeDriverDTOList(driverService.search(searchDTO));
+    } 
 
 }

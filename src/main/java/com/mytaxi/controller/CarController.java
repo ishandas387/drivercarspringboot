@@ -42,36 +42,68 @@ public class CarController {
 		this.carService = carService;
 	}
 
+	/**
+	 * Creates car
+	 * @param carDTO
+	 * @return
+	 * @throws ConstraintsViolationException when unique constraint violates
+	 */
 	@PostMapping
 	@ResponseStatus(HttpStatus.CREATED)
 	public CarDTO createCar(@Valid @RequestBody CarDTO carDTO) throws ConstraintsViolationException {
 		return CarMapper.createCarDTO(carService.createCar(CarMapper.makeCarDO(carDTO)));
 	}
 
+	/**
+	 * Find car by ID
+	 * @param carId
+	 * @return
+	 * @throws EntityNotFoundException
+	 */
 	@GetMapping("/{carId}")
 	public CarDTO getCar(@PathVariable Long carId) throws EntityNotFoundException {
 		return CarMapper.createCarDTO(carService.findCar(carId));
 	}
 
+	/**
+	 * Get all cars.
+	 * @return
+	 */
 	@GetMapping
 	public List<CarDTO> getAllCars() {
 		return CarMapper.createCarDTOList(carService.findAllCar());
 	}
 
+	/**
+	 * Delete car by ID
+	 * @param carId
+	 * @throws EntityNotFoundException
+	 */
 	@DeleteMapping("/{carId}")
 	public void deleteCar(@PathVariable long carId) throws EntityNotFoundException {
 		carService.delete(carId);
 	}
 
+	/**
+	 * Update car
+	 * @param carId
+	 * @param carDTO
+	 * @throws EntityNotFoundException
+	 */
 	@PutMapping("/{carId}")
 	@ResponseStatus(HttpStatus.OK)
 	public void updateCar(@PathVariable Long carId, CarDTO carDTO) throws EntityNotFoundException {
 		carService.updateCar(CarMapper.makeCarDO(carDTO), carId);
 	}
 
+	/**
+	 * Get all manufacturer details.
+	 * @return
+	 */
 	@GetMapping("/manufacturers")
 	public List<ManufacturerDTO> getAllManufacturers() {
 		return ManufacturerMapper.makeManufacturerDTOList(carService.getAllCarManufacturers());
 	}
 
+	
 }

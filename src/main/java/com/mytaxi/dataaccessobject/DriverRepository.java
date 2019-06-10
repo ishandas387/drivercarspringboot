@@ -13,4 +13,5 @@ public interface DriverRepository extends CrudRepository<DriverDO, Long>
 {
 
     List<DriverDO> findByOnlineStatus(OnlineStatus onlineStatus);
+    List<DriverDO> findByDeleted(boolean isDeleted);
 }
