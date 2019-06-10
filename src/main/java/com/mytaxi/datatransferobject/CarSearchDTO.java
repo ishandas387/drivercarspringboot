@@ -8,7 +8,6 @@ public class CarSearchDTO {
 	private String licensePlate;
     private Integer seatCount;
     private EngineType engineType;
-    private ManufacturerDTO manufacturer;
     private String model;
     private CarClassification classification;
     private String colour;
@@ -37,12 +36,6 @@ public class CarSearchDTO {
 	}
 	public void setEngineType(EngineType engineType) {
 		this.engineType = engineType;
-	}
-	public ManufacturerDTO getManufacturer() {
-		return manufacturer;
-	}
-	public void setManufacturer(ManufacturerDTO manufacturer) {
-		this.manufacturer = manufacturer;
 	}
 	public String getModel() {
 		return model;
