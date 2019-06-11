@@ -47,7 +47,7 @@ insert into manufacturer (id, date_created, deleted, brand,country_registered) v
 insert into manufacturer (id, date_created, deleted, brand,country_registered) values (3, now(), false, 'FORD','USA');
 insert into manufacturer (id, date_created, deleted, brand,country_registered) values (4, now(), false, 'TATA','INDIA');
 -- Create 4 Cars
-insert into car (id, date_created, deleted, seat_count, registration_date,rating,model,manufacturer_id,license_plate,engine_type,classification,colour)  values (1, now(), false, 5,now(), 0,'X5',1,'IN1234','GAS','SUV','RED');
-insert into car (id, date_created, deleted, seat_count, registration_date,rating,model,manufacturer_id,license_plate,engine_type,classification,colour)  values (2, now(), false, 5,now(), 0,'CIVIC',2,'IN1235','HYBRID','SEDAN','BLACK');
+insert into car (id, date_created, deleted, seat_count, registration_date,rating,model,manufacturer_id,license_plate,engine_type,classification,colour)  values (1, now(), false, 5,now(), 3,'X5',1,'IN1234','GAS','SUV','RED');
+insert into car (id, date_created, deleted, seat_count, registration_date,rating,model,manufacturer_id,license_plate,engine_type,classification,colour)  values (2, now(), false, 5,now(), 2,'CIVIC',2,'IN1235','HYBRID','SEDAN','BLACK');
 insert into car (id, date_created, deleted, seat_count, registration_date,rating,model,manufacturer_id,license_plate,engine_type,classification,colour)  values (3, now(), false, 5,now(), 0,'TIAGO',4,'IN1236','DIESEL','HATCHBACK','CYAN');
 insert into car (id, date_created, deleted, seat_count, registration_date,rating,model,manufacturer_id,license_plate,engine_type,classification,colour)  values (4, now(), false, 5,now(), 0,'FOCUS',3,'IN1237','ELECTRIC','SUV','BLUE');
