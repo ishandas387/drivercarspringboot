@@ -119,7 +119,7 @@ public class CarDO {
 	 * @param deleted
 	 * @param allocatedDriver
 	 */
-	public CarDO(GeoCoordinate coordinate, ZonedDateTime dateCreated,
+	public CarDO( ZonedDateTime dateCreated,
 			@NotNull(message = "License plate number can not be null!") String licensePlate,
 			@NotNull(message = "Seat Count can not be null!") Integer seatCount,
 			@NotNull(message = "Engine type can not be null!") EngineType engineType,
@@ -127,8 +127,7 @@ public class CarDO {
 			@NotNull(message = "manufacturer_id can not be null!") ManufacturerDO manufacturer,
 			@NotNull(message = "Rating can not be null!") Integer rating,
 			@NotNull(message = "Classification can not be null!") CarClassification classification, String colour,
-			ZonedDateTime registrationDate, Boolean deleted/*, DriverDTO allocatedDriver*/) {
-		this.coordinate = coordinate;
+			ZonedDateTime registrationDate, Boolean deleted) {
 		this.dateCreated = dateCreated;
 		this.licensePlate = licensePlate;
 		this.seatCount = seatCount;
@@ -140,7 +139,7 @@ public class CarDO {
 		this.colour = colour;
 		this.registrationDate = registrationDate;
 		this.deleted = deleted;
-		/*this.allocatedDriver = DriverMapper.makeDriverDO(allocatedDriver);*/
+		
 	}
 
 	public Long getId() {

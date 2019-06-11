@@ -1,11 +1,13 @@
 package com.mytaxi.controller.mapper;
 
-import com.mytaxi.datatransferobject.DriverDTO;
-import com.mytaxi.domainobject.DriverDO;
-import com.mytaxi.domainvalue.GeoCoordinate;
 import java.util.Collection;
 import java.util.List;
 import java.util.stream.Collectors;
+
+import com.mytaxi.datatransferobject.DriverDTO;
+import com.mytaxi.domainobject.CarDO;
+import com.mytaxi.domainobject.DriverDO;
+import com.mytaxi.domainvalue.GeoCoordinate;
 
 public class DriverMapper
 {
@@ -15,6 +17,11 @@ public class DriverMapper
     }
 
 
+    /**
+     * Creates a driverDTO from DO
+     * @param driverDO
+     * @return
+     */
     public static DriverDTO makeDriverDTO(DriverDO driverDO)
     {
         DriverDTO.DriverDTOBuilder driverDTOBuilder = DriverDTO.newBuilder()
@@ -27,11 +34,21 @@ public class DriverMapper
         {
             driverDTOBuilder.setCoordinate(coordinate);
         }
+       
+       //adding car details to driver dto for better search result readability. 
+       CarDO car = driverDO.getSelectedCar();
+       if(null != car){
+    	   driverDTOBuilder.setCar(CarMapper.createCarDTO(car));
+       }
 
         return driverDTOBuilder.createDriverDTO();
     }
 
-
+    /**
+     * Deals with list.
+     * @param drivers
+     * @return
+     */
     public static List<DriverDTO> makeDriverDTOList(Collection<DriverDO> drivers)
     {
         return drivers.stream()

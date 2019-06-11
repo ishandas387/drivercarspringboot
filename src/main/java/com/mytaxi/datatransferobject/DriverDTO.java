@@ -1,10 +1,11 @@
 package com.mytaxi.datatransferobject;
 
+import javax.validation.constraints.NotNull;
+
 import com.fasterxml.jackson.annotation.JsonIgnore;
 import com.fasterxml.jackson.annotation.JsonInclude;
 import com.fasterxml.jackson.annotation.JsonProperty;
 import com.mytaxi.domainvalue.GeoCoordinate;
-import javax.validation.constraints.NotNull;
 
 @JsonInclude(JsonInclude.Include.NON_NULL)
 public class DriverDTO
@@ -19,6 +20,8 @@ public class DriverDTO
     private String password;
 
     private GeoCoordinate coordinate;
+    
+    private CarDTO car;
 
 
     private DriverDTO()
@@ -26,12 +29,15 @@ public class DriverDTO
     }
 
 
-    private DriverDTO(Long id, String username, String password, GeoCoordinate coordinate)
+   
+
+	private DriverDTO(Long id, String username, String password, GeoCoordinate coordinate, CarDTO car)
     {
         this.id = id;
         this.username = username;
         this.password = password;
         this.coordinate = coordinate;
+        this.car= car;
     }
 
 
@@ -59,6 +65,14 @@ public class DriverDTO
         return password;
     }
 
+    public CarDTO getCar() {
+		return car;
+	}
+
+
+	public void setCar(CarDTO car) {
+		this.car = car;
+	}
 
     public GeoCoordinate getCoordinate()
     {
@@ -71,6 +85,7 @@ public class DriverDTO
         private String username;
         private String password;
         private GeoCoordinate coordinate;
+        private CarDTO car;
 
 
         public DriverDTOBuilder setId(Long id)
@@ -100,10 +115,16 @@ public class DriverDTO
             return this;
         }
 
+        public DriverDTOBuilder setCar(CarDTO car)
+        {
+            this.car = car;
+            return this;
+        }
+
 
         public DriverDTO createDriverDTO()
         {
-            return new DriverDTO(id, username, password, coordinate);
+            return new DriverDTO(id, username, password, coordinate,car);
         }
 
     }
