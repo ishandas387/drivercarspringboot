@@ -142,7 +142,6 @@ public class DefaultCarServiceTest {
 		m.setBrand("BMW");
 		listOfmanufacturer.add(m );
 		Mockito.when(manufacturerRepository.findByBrand("BMW")).thenReturn(listOfmanufacturer );
-		Mockito.when(manufacturerRepository.save(any(ManufacturerDO.class))).thenReturn(new ManufacturerDO());
 		defaultCarService.updateCar(car, 1L);
 		 Mockito.verify(manufacturerRepository).findByBrand("BMW");
 		
