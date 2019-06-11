@@ -1,13 +1,13 @@
 package com.mytaxi.service.driver;
 
+import java.util.List;
+
 import com.mytaxi.datatransferobject.SearchDTO;
 import com.mytaxi.domainobject.DriverDO;
 import com.mytaxi.domainvalue.OnlineStatus;
 import com.mytaxi.exception.ConstraintsViolationException;
+import com.mytaxi.exception.DriverSearchException;
 import com.mytaxi.exception.EntityNotFoundException;
-
-import java.util.Collection;
-import java.util.List;
 
 public interface DriverService
 {
@@ -22,6 +22,6 @@ public interface DriverService
 
     List<DriverDO> find(OnlineStatus onlineStatus);
 
-	List<DriverDO> search(SearchDTO searchDTO);
+	List<DriverDO> search(SearchDTO searchDTO) throws DriverSearchException;
 
 }

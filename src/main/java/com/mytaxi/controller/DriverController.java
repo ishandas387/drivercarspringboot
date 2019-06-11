@@ -24,6 +24,7 @@ import com.mytaxi.domainobject.DriverDO;
 import com.mytaxi.domainvalue.OnlineStatus;
 import com.mytaxi.exception.CarAlreadyInUseException;
 import com.mytaxi.exception.ConstraintsViolationException;
+import com.mytaxi.exception.DriverSearchException;
 import com.mytaxi.exception.EntityNotFoundException;
 import com.mytaxi.service.car.CarService;
 import com.mytaxi.service.driver.DriverService;
@@ -97,7 +98,7 @@ public class DriverController
     }
     
     @GetMapping("/search")
-    public List<DriverDTO> search(SearchDTO searchDTO)
+    public List<DriverDTO> search(SearchDTO searchDTO) throws DriverSearchException
     {
         return DriverMapper.makeDriverDTOList(driverService.search(searchDTO));
     } 

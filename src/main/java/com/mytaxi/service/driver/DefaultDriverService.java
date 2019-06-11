@@ -26,6 +26,7 @@ import com.mytaxi.domainobject.DriverDO;
 import com.mytaxi.domainvalue.GeoCoordinate;
 import com.mytaxi.domainvalue.OnlineStatus;
 import com.mytaxi.exception.ConstraintsViolationException;
+import com.mytaxi.exception.DriverSearchException;
 import com.mytaxi.exception.EntityNotFoundException;
 
 /**
@@ -128,36 +129,44 @@ public class DefaultDriverService implements DriverService {
 	 * search service
 	 * @param searchDTO
 	 * @return List<DriverDO> after filtering.
+	 * @throws DriverSearchException 
 	 */
 	@Override
-	public List<DriverDO> search(SearchDTO searchDTO) {
+	public List<DriverDO> search(SearchDTO searchDTO) throws DriverSearchException {
 		List<DriverDO> listOfDriverDO = new ArrayList<>();
 		Map searchMap = new ObjectMapper().convertValue(searchDTO, Map.class);
 
 		// if no values are sent. search results defaults to all not deleted
 		// drivers.
-		if (null == searchDTO
-				|| (null == searchDTO.getDriverSearchParams() && null == searchDTO.getCarSearchParams())) {
-			return (List<DriverDO>) driverRepository.findByDeleted(Boolean.FALSE);
-		}
-		// if only driver filter criteria is available. search result defaults
-		// to
-		// driver.
-		else if (null != searchDTO.getDriverSearchParams() && null == searchDTO.getCarSearchParams()) {
-			listOfDriverDO = getDetailsByDriverParams(searchDTO.getDriverSearchParams(), new ArrayList<>());
-		}
-		// if car criteria is present, search with car details first.
-		else if (null != searchDTO.getCarSearchParams()) {
-
-			listOfDriverDO = getDetailsByCarParams(searchDTO);
-
-			// refine search with driverIds
-			if (null != searchDTO.getDriverSearchParams()) {
-				List<Long> collectedDriverIdsFilteredByCar = listOfDriverDO.stream().map(DriverDO::getId)
-						.collect(Collectors.toList());
-				listOfDriverDO = getDetailsByDriverParams(searchDTO.getDriverSearchParams(),
-						collectedDriverIdsFilteredByCar);
+		try{
+			
+			if (null == searchDTO
+					|| (null == searchDTO.getDriverSearchParams() && null == searchDTO.getCarSearchParams())) {
+				return (List<DriverDO>) driverRepository.findByDeleted(Boolean.FALSE);
 			}
+			// if only driver filter criteria is available. search result defaults
+			// to
+			// driver.
+			else if (null != searchDTO.getDriverSearchParams() && null == searchDTO.getCarSearchParams()) {
+				listOfDriverDO = getDetailsByDriverParams(searchDTO.getDriverSearchParams(), new ArrayList<>());
+			}
+			// if car criteria is present, search with car details first.
+			else if (null != searchDTO.getCarSearchParams()) {
+				
+				listOfDriverDO = getDetailsByCarParams(searchDTO);
+				
+				// refine search with driverIds
+				if (null != searchDTO.getDriverSearchParams()) {
+					List<Long> collectedDriverIdsFilteredByCar = listOfDriverDO.stream().map(DriverDO::getId)
+							.collect(Collectors.toList());
+					listOfDriverDO = getDetailsByDriverParams(searchDTO.getDriverSearchParams(),
+							collectedDriverIdsFilteredByCar);
+				}
+			}
+		}
+		catch(Exception e){
+			LOG.error("Exception while searching drivers",e.getMessage());
+			throw new DriverSearchException(e.getMessage());
 		}
 
 		return listOfDriverDO;
