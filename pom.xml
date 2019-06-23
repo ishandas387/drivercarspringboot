@@ -3,18 +3,14 @@
          xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/xsd/maven-4.0.0.xsd">
     <modelVersion>4.0.0</modelVersion>
 
-    <groupId>com.mytaxi</groupId>
-    <artifactId>mytaxi_server_applicant_test</artifactId>
+    <groupId>com.driver.taxi.test</groupId>
+    <artifactId>drivertaxirestservice</artifactId>
     <version>1.0.0-SNAPSHOT</version>
     <packaging>jar</packaging>
 
     <name>mytaxi applicant test</name>
     <description>Test project backend/server applicants.</description>
 
-    <organization>
-        <name>Intelligent Apps GmbH</name>
-        <url>http://www.mytaxi.com</url>
-    </organization>
 
     <parent>
         <groupId>org.springframework.boot</groupId>
