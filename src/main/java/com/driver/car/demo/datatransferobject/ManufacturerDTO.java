@@ -67,6 +67,12 @@ public class ManufacturerDTO {
 		this.brand = brand;
 		this.countryRegistered = countryRegistered;
 	}
+	/**
+	 * 
+	 */
+	public ManufacturerDTO() {
+		super();
+	}
 	
 	
 	

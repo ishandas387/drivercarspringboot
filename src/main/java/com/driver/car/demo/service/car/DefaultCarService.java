@@ -217,6 +217,8 @@ public class DefaultCarService implements CarService {
 
 		DriverDO driver = driverService.find(driverId);
 		if (null != driver) {
+			CarDO selectedCar = driver.getSelectedCar();
+			selectedCar.setAllocatedDriver(null);
 			driver.setSelectedCar(null);
 		}
 	}

@@ -92,8 +92,8 @@ public class CarDO {
 	@Column(nullable = false)
 	private Boolean deleted = false;
  
-	@OneToOne
-	@JoinColumn(name = "allocated_driver", referencedColumnName = "id")
+	@OneToOne(mappedBy="selectedCar")
+	//@JoinColumn(name = "allocated_driver", referencedColumnName = "id")
 	private DriverDO allocatedDriver;
 	
 	

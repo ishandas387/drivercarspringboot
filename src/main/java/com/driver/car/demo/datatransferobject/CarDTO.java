@@ -5,7 +5,6 @@ package com.driver.car.demo.datatransferobject;
 
 import javax.validation.constraints.NotNull;
 
-import com.driver.car.demo.datatransferobject.DriverDTO.DriverDTOBuilder;
 import com.driver.car.demo.domainvalue.CarClassification;
 import com.driver.car.demo.domainvalue.EngineType;
 import com.fasterxml.jackson.annotation.JsonInclude;
@@ -16,14 +15,21 @@ import com.fasterxml.jackson.annotation.JsonInclude;
  */
 @JsonInclude(JsonInclude.Include.NON_NULL)
 public class CarDTO {
+	
 
 	@NotNull(message = "LicensePlate can not be null!")
 	private String licensePlate;
+	@NotNull(message = "Seat Count can not be null!")
     private Integer seatCount;
+	@NotNull(message = "engineType can not be null!")
     private EngineType engineType;
+	@NotNull(message = "manufacturer can not be null!")
     private ManufacturerDTO manufacturer;
+	@NotNull(message = "model can not be null!")
     private String model;
+	@NotNull(message = "classification can not be null!")
     private CarClassification classification;
+	@NotNull(message = "colour can not be null!")
     private String colour;
 	/**
 	 * @return the licensePlate
